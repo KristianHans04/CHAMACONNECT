@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: chamaconnect-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: chamaconnect
+      POSTGRES_PASSWORD: chamaconnect_dev
+      POSTGRES_DB: chamaconnect
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chamaconnect"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  maildev:
+    image: maildev/maildev
+    container_name: chamaconnect-mail
+    restart: unless-stopped
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    environment:
+      MAILDEV_WEB_PORT: 1080
+      MAILDEV_SMTP_PORT: 1025
+
+volumes:
+  pgdata:
