@@ -1,0 +1,10 @@
+name = "chamaconnect"
+compatibility_date = "2025-04-01"
+
+[vars]
+DEMO_MODE = "true"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "chamaconnect-db"
+database_id = "1f473d4a-394e-44f8-ab27-696e47ac385f"
