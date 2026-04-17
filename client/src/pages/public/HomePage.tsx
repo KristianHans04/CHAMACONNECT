@@ -235,29 +235,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* CTA */}
-      <section className="border-t border-slate-100 bg-brand-700 py-20">
-        <div className="mx-auto max-w-3xl px-4 text-center">
-          <h2 className="text-3xl font-bold text-white">
-            Ready to bring transparency to your chama?
-          </h2>
-          <p className="mt-4 text-brand-100">
-            Create your account in under a minute. No credit card required.
-          </p>
-          <div className="mt-8">
-            <Link to="/signup">
-              <Button
-                size="lg"
-                className="bg-white text-brand-700 hover:bg-brand-50"
-              >
-                Get Started Free
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
