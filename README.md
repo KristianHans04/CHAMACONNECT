@@ -1,6 +1,7 @@
 # ChamaConnect Transparency and Operations Suite
 
 **Live URL:** [https://chamaconnect.kristianhans.com](https://chamaconnect.kristianhans.com)
+**Fallback URL:** [https://chamaconnect.pages.dev](https://chamaconnect.pages.dev)
 
 ---
 
