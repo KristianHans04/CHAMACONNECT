@@ -91,18 +91,18 @@ CHAMACONNECT/
 
 ## Demo Mode
 
-The app runs in **demo mode** by default (`DEMO_MODE=true`), which returns OTP codes directly in the API response so you can test the full auth flow without email delivery. In production, set `DEMO_MODE=false` and configure a mail service.
+Production should run with `DEMO_MODE=false` so OTP codes are sent through Resend email delivery. The sender is configured as `chamaconnect@scrapifie.com` via `EMAIL_FROM`. Use `DEMO_MODE=true` only when you need OTP values returned in API responses for local testing.
 
 ## Environment Variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `JWT_SECRET` | Yes | Secret key for JWT signing |
-| `DEMO_MODE` | No | Set to `true` to return OTP in API responses (default: true) |
+| `DEMO_MODE` | No | Set to `false` for real email OTP delivery; set to `true` only for local/demo testing |
 | `PAYSTACK_SECRET_KEY` | No | Paystack secret key for payment processing |
 | `PAYSTACK_PUBLIC_KEY` | No | Paystack public key |
-| `RESEND_API_KEY` | No | Resend API key for email delivery |
-| `EMAIL_FROM` | No | Sender email address |
+| `RESEND_API_KEY` | Yes (when `DEMO_MODE=false`) | Resend API key for email OTP delivery |
+| `EMAIL_FROM` | No | Sender email address (default: `chamaconnect@scrapifie.com`) |
 
 ## Database Schema
 
