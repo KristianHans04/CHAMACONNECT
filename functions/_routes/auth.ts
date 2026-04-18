@@ -1,8 +1,20 @@
 import { Hono } from 'hono';
 import type { Env } from '../_lib/types';
 import { generateId, generateOtp, now, createJwt, verifyJwt, auditLog } from '../_lib/types';
+import { sendOtpEmail } from '../_lib/email';
 
 const auth = new Hono<{ Bindings: Env }>();
+
+async function sendOtpIfRequired(params: { env: Env; db: D1Database; otpId: string; email: string; code: string }): Promise<string | null> {
+  if (params.env.DEMO_MODE === 'true') return null;
+  try {
+    await sendOtpEmail(params.env, params.email, params.code);
+    return null;
+  } catch (error) {
+    await params.db.prepare('UPDATE otps SET used = 1 WHERE id = ?').bind(params.otpId).run();
+    return error instanceof Error ? error.message : 'Unknown email delivery error';
+  }
+}
 
 auth.post('/signup', async (c) => {
   const { email, name } = await c.req.json();
@@ -20,6 +32,9 @@ auth.post('/signup', async (c) => {
   const otpId = generateId();
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
   await db.prepare('INSERT INTO otps (id, code, email, user_id, expires_at, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(otpId, code, email, userId, expiresAt, ts).run();
+
+  const emailError = await sendOtpIfRequired({ env: c.env, db, otpId, email, code });
+  if (emailError) return c.json({ error: `Could not send verification code: ${emailError}` }, 502);
 
   const isDemoMode = c.env.DEMO_MODE === 'true';
   return c.json({
@@ -43,6 +58,9 @@ auth.post('/login', async (c) => {
   const otpId = generateId();
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
   await db.prepare('INSERT INTO otps (id, code, email, user_id, expires_at, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(otpId, code, email, user.id as string, expiresAt, now()).run();
+
+  const emailError = await sendOtpIfRequired({ env: c.env, db, otpId, email, code });
+  if (emailError) return c.json({ error: `Could not send login code: ${emailError}` }, 502);
 
   const isDemoMode = c.env.DEMO_MODE === 'true';
   return c.json({
@@ -89,6 +107,9 @@ auth.post('/resend-otp', async (c) => {
   const otpId = generateId();
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
   await db.prepare('INSERT INTO otps (id, code, email, user_id, expires_at, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(otpId, code, email, user.id as string, expiresAt, now()).run();
+
+  const emailError = await sendOtpIfRequired({ env: c.env, db, otpId, email, code });
+  if (emailError) return c.json({ error: `Could not resend code: ${emailError}` }, 502);
 
   const isDemoMode = c.env.DEMO_MODE === 'true';
   return c.json({

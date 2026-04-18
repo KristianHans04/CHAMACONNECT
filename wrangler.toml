@@ -2,7 +2,8 @@ name = "chamaconnect"
 compatibility_date = "2025-04-01"
 
 [vars]
-DEMO_MODE = "true"
+DEMO_MODE = "false"
+EMAIL_FROM = "chamaconnect@scrapifie.com"
 
 [[d1_databases]]
 binding = "DB"
