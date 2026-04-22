@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "wrangler pages dev client/dist --d1 DB=chamaconnect-db --compatibility-date 2025-04-01",
+    "dev": "npm run db:migrate:local && VITE_API_URL= npm run build:client && wrangler pages dev client/dist --compatibility-date 2025-04-01 --persist-to .wrangler/state --inspector-port 9330",
+    "build:client": "cd client && npm run build",
     "build": "cd client && npm install && npm run build",
-    "db:migrate:local": "wrangler d1 execute chamaconnect-db --local --file=migrations/0001_init.sql",
+    "db:migrate:local": "wrangler d1 execute chamaconnect-db --local --persist-to .wrangler/state --file=migrations/0001_init.sql",
     "db:migrate:remote": "wrangler d1 execute chamaconnect-db --remote --file=migrations/0001_init.sql",
     "deploy": "wrangler pages deploy client/dist --project-name chamaconnect"
   },
