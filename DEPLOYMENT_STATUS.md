@@ -74,22 +74,22 @@
 
 ## Local Development
 
-**Note:** Local development with D1 has known Wrangler limitations where migrations don't persist to the dev server's database instance. For local testing:
+Local development is now fully wired for OTP + D1:
 
-Option 1: Use production environment (recommended for testing)
-- Run: `npm run build`
-- Visit: https://chamaconnect.kristianhans.com
-
-Option 2: Set up local D1 (advanced)
 ```bash
-npm run db:migrate:local
 npm run dev
-# Then seed: curl -X POST http://localhost:8788/api/seed
+# Runs migration, rebuilds frontend with local API base, and starts Pages dev
+# Local URL: http://localhost:8788
+# Seed demo data:
+curl -X POST http://localhost:8788/api/seed
 ```
 
 ## Recent Fixes & Optimizations
 
 - ✅ Fixed D1 type imports (proper `@cloudflare/workers-types` imports)
+- ✅ Fixed chama route param mismatch (`:id` vs `:chamaId`) that caused blank members/plans pages
+- ✅ Normalized API response contracts for members, contributions, statements, overdue, and audit pages
+- ✅ Fixed contribution status handling to use `UPCOMING`/`PAID`/`PARTIALLY_PAID`/`OVERDUE`
 - ✅ Optimized seed script for Cloudflare CPU limits
 - ✅ Reduced seed data volume (3-5 members per chama, 2-3 records per member)
 - ✅ Fixed undefined value handling in seed operations

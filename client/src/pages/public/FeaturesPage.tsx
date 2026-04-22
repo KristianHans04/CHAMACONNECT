@@ -163,7 +163,7 @@ export default function FeaturesPage() {
                     {index === 0 && (
                       <img
                         src="/features.jpg"
-                        alt={feature.title}
+                        alt="African women in a chama group discussing savings and records"
                         className="hidden md:block rounded-lg shadow-lg"
                       />
                     )}

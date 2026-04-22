@@ -108,8 +108,8 @@ export default function HomePage() {
             </div>
             <div className="hidden md:block">
               <img
-                src="/hero.jpg"
-                alt="Team collaboration"
+                src="/features.jpg"
+                alt="African chama members meeting and planning contributions"
                 className="rounded-lg shadow-2xl"
               />
             </div>
