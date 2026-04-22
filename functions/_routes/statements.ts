@@ -19,6 +19,8 @@ statements.get('/chamas/:chamaId/statements', async (c) => {
       return {
         member: { id: m.user_id, name: m.name, email: m.email },
         membershipId: m.id,
+        memberId: m.id,
+        memberName: m.name,
         role: m.role,
         totalExpected: agg.total_expected,
         totalPaid: agg.total_paid,
@@ -57,12 +59,38 @@ statements.get('/chamas/:chamaId/statements/:memberId', async (c) => {
   const totalPaid = recs.reduce((s, r) => s + (r.amount as number), 0);
   const totalOverdue = recs.filter(r => r.status === 'OVERDUE').reduce((s, r) => s + ((r.expected_amount as number) - (r.amount as number)), 0);
 
+  const transactions = recs.map(r => ({
+    id: r.id,
+    amount: r.amount,
+    expectedAmount: r.expected_amount,
+    expected_amount: r.expected_amount,
+    status: r.status,
+    dueDate: r.due_date,
+    due_date: r.due_date,
+    paidDate: r.paid_at,
+    paid_at: r.paid_at,
+    planName: r.plan_name,
+    plan_name: r.plan_name,
+    note: r.note,
+  }));
+
+  const statement = {
+    memberId: membership.id,
+    memberName: membership.name,
+    totalExpected,
+    totalPaid,
+    totalOverdue,
+    balance: totalExpected - totalPaid,
+    transactions,
+  };
+
   return c.json({
     member: { id: membership.user_id, name: membership.name, email: membership.email },
     membershipId: membership.id,
     role: membership.role,
     summary: { totalExpected, totalPaid, totalOverdue, balance: totalExpected - totalPaid },
     records: recs.map(r => ({ ...r, plan: { name: r.plan_name, frequency: r.plan_frequency } })),
+    statement,
   });
 });
 

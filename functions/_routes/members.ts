@@ -10,7 +10,13 @@ members.get('/chamas/:chamaId/members', async (c) => {
     SELECT m.id, m.role, m.joined_at, m.is_active, u.id as user_id, u.email, u.name, u.phone
     FROM memberships m JOIN users u ON m.user_id = u.id WHERE m.chama_id = ? AND m.is_active = 1 ORDER BY m.joined_at ASC
   `).bind(chamaId).all();
-  const members = rows.results.map(r => ({ id: r.id, role: r.role, joinedAt: r.joined_at, user: { id: r.user_id, email: r.email, name: r.name, phone: r.phone } }));
+  const members = rows.results.map(r => ({
+    id: r.id,
+    role: r.role,
+    joinedAt: r.joined_at,
+    createdAt: r.joined_at,
+    user: { id: r.user_id, email: r.email, name: r.name, phone: r.phone },
+  }));
   return c.json({ members });
 });
 
@@ -28,9 +34,27 @@ members.get('/chamas/:chamaId/members/:memberId', async (c) => {
     JOIN contribution_plans cp ON cr.plan_id = cp.id WHERE cr.membership_id = ? ORDER BY cr.due_date DESC LIMIT 20
   `).bind(memberId).all();
 
+  const contributionRows = contributions.results.map((r) => ({
+    id: r.id,
+    amount: r.amount,
+    expectedAmount: r.expected_amount,
+    expected_amount: r.expected_amount,
+    status: r.status,
+    dueDate: r.due_date,
+    due_date: r.due_date,
+    planName: r.plan_name,
+    plan_name: r.plan_name,
+  }));
+
   return c.json({
-    member: { id: membership.id, role: membership.role, joinedAt: membership.joined_at, user: { id: membership.user_id, email: membership.email, name: membership.name, phone: membership.phone } },
-    contributions: contributions.results,
+    member: {
+      id: membership.id,
+      role: membership.role,
+      joinedAt: membership.joined_at,
+      createdAt: membership.joined_at,
+      user: { id: membership.user_id, email: membership.email, name: membership.name, phone: membership.phone },
+    },
+    contributions: contributionRows,
   });
 });
 
@@ -39,9 +63,11 @@ members.patch('/chamas/:chamaId/members/:memberId/role', async (c) => {
   const { chamaId, memberId } = c.req.param();
   const { role } = await c.req.json();
   const db = c.env.DB;
+  const allowedRoles = new Set(['ADMIN', 'TREASURER', 'MEMBER']);
 
   const caller = await db.prepare('SELECT role FROM memberships WHERE user_id = ? AND chama_id = ? AND is_active = 1').bind(userId, chamaId).first();
   if (!caller || caller.role !== 'ADMIN') return c.json({ error: 'Only admins can change roles' }, 403);
+  if (!allowedRoles.has(role)) return c.json({ error: 'Invalid role supplied' }, 400);
 
   await db.prepare('UPDATE memberships SET role = ? WHERE id = ?').bind(role, memberId).run();
   await auditLog(db, { chamaId, userId, action: 'ROLE_CHANGED', entity: 'membership', entityId: memberId, details: { newRole: role } });
@@ -89,7 +115,17 @@ members.get('/chamas/:chamaId/invites', async (c) => {
     SELECT i.*, u.name as sent_by_name, u.email as sent_by_email
     FROM invites i JOIN users u ON i.sent_by_id = u.id WHERE i.chama_id = ? ORDER BY i.created_at DESC
   `).bind(chamaId).all();
-  return c.json({ invites: rows.results });
+  const invites = rows.results.map((r) => ({
+    id: r.id,
+    email: r.email,
+    role: r.role,
+    status: r.status,
+    token: r.token,
+    createdAt: r.created_at,
+    expiresAt: r.expires_at,
+    sentBy: { name: r.sent_by_name, email: r.sent_by_email },
+  }));
+  return c.json({ invites });
 });
 
 members.get('/invites/:token/info', async (c) => {

@@ -83,11 +83,17 @@ export default function AuditLogPage() {
             id="action-filter"
             options={[
               { value: '', label: 'All Actions' },
-              { value: 'CREATE', label: 'Create' },
-              { value: 'UPDATE', label: 'Update' },
-              { value: 'DELETE', label: 'Delete' },
-              { value: 'INVITE', label: 'Invite' },
-              { value: 'ROLE_CHANGE', label: 'Role Change' },
+              { value: 'CHAMA_CREATED', label: 'Chama Created' },
+              { value: 'CHAMA_UPDATED', label: 'Chama Updated' },
+              { value: 'PLAN_CREATED', label: 'Plan Created' },
+              { value: 'PLAN_UPDATED', label: 'Plan Updated' },
+              { value: 'CONTRIBUTION_CREATED', label: 'Contribution Created' },
+              { value: 'CONTRIBUTION_UPDATED', label: 'Contribution Updated' },
+              { value: 'MEMBER_INVITED', label: 'Member Invited' },
+              { value: 'INVITE_ACCEPTED', label: 'Invite Accepted' },
+              { value: 'ROLE_CHANGED', label: 'Role Changed' },
+              { value: 'MEMBER_REMOVED', label: 'Member Removed' },
+              { value: 'LOGIN', label: 'Login' },
             ]}
             value={actionFilter}
             onChange={(e) => updateFilter('action', e.target.value)}
@@ -98,11 +104,12 @@ export default function AuditLogPage() {
             id="entity-filter"
             options={[
               { value: '', label: 'All Entities' },
-              { value: 'CHAMA', label: 'Chama' },
-              { value: 'MEMBER', label: 'Member' },
-              { value: 'CONTRIBUTION', label: 'Contribution' },
-              { value: 'PLAN', label: 'Plan' },
-              { value: 'INVITE', label: 'Invite' },
+              { value: 'chama', label: 'Chama' },
+              { value: 'membership', label: 'Membership' },
+              { value: 'contribution_plan', label: 'Contribution Plan' },
+              { value: 'contribution_record', label: 'Contribution Record' },
+              { value: 'invite', label: 'Invite' },
+              { value: 'CHAMA', label: 'Chama (legacy)' },
             ]}
             value={entityFilter}
             onChange={(e) => updateFilter('entity', e.target.value)}

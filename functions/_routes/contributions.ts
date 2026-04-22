@@ -65,6 +65,7 @@ contributions.delete('/chamas/:chamaId/plans/:planId', async (c) => {
 contributions.get('/chamas/:chamaId/contributions', async (c) => {
   const chamaId = c.req.param('chamaId');
   const { status, memberId, planId, page = '1', limit = '20' } = c.req.query();
+  const normalizedStatus = status === 'PENDING' ? 'UPCOMING' : status;
 
   let sql = `SELECT cr.*, cp.name as plan_name, cp.amount as plan_amount, cp.frequency as plan_frequency,
     u.name as user_name, u.email as user_email, m.id as mem_id
@@ -75,7 +76,7 @@ contributions.get('/chamas/:chamaId/contributions', async (c) => {
     WHERE cp.chama_id = ?`;
   const params: unknown[] = [chamaId];
 
-  if (status) { sql += ' AND cr.status = ?'; params.push(status); }
+  if (normalizedStatus) { sql += ' AND cr.status = ?'; params.push(normalizedStatus); }
   if (memberId) { sql += ' AND cr.membership_id = ?'; params.push(memberId); }
   if (planId) { sql += ' AND cr.plan_id = ?'; params.push(planId); }
 
@@ -88,12 +89,32 @@ contributions.get('/chamas/:chamaId/contributions', async (c) => {
 
   const rows = await c.env.DB.prepare(sql).bind(...params).all();
   const records = rows.results.map(r => ({
-    ...r,
-    plan: { name: r.plan_name, amount: r.plan_amount, frequency: r.plan_frequency },
+    id: r.id,
+    amount: r.amount,
+    expectedAmount: r.expected_amount,
+    expected_amount: r.expected_amount,
+    status: r.status,
+    dueDate: r.due_date,
+    due_date: r.due_date,
+    paidAt: r.paid_at,
+    paid_at: r.paid_at,
+    note: r.note,
+    createdAt: r.created_at,
+    created_at: r.created_at,
+    updatedAt: r.updated_at,
+    updated_at: r.updated_at,
+    plan: { id: r.plan_id, name: r.plan_name, amount: r.plan_amount, frequency: r.plan_frequency },
+    member: { id: r.mem_id, user: { name: r.user_name, email: r.user_email } },
     membership: { id: r.mem_id, user: { name: r.user_name, email: r.user_email } },
   }));
 
-  return c.json({ records, total: total?.cnt || 0, page: p, totalPages: Math.ceil((total?.cnt || 0) / l) });
+  return c.json({
+    records,
+    contributions: records,
+    total: total?.cnt || 0,
+    page: p,
+    totalPages: Math.ceil((total?.cnt || 0) / l),
+  });
 });
 
 contributions.post('/chamas/:chamaId/contributions', async (c) => {
@@ -101,6 +122,7 @@ contributions.post('/chamas/:chamaId/contributions', async (c) => {
   const chamaId = c.req.param('chamaId');
   const body = await c.req.json();
   const { planId, membershipId, amount = 0, expectedAmount, dueDate, status = 'UPCOMING', note } = body;
+  const normalizedStatus = status === 'PENDING' ? 'UPCOMING' : status;
   if (!planId || !membershipId || !expectedAmount || !dueDate) return c.json({ error: 'Plan, member, expected amount, and due date required' }, 400);
 
   const membership = await c.env.DB.prepare('SELECT user_id FROM memberships WHERE id = ?').bind(membershipId).first();
@@ -110,10 +132,22 @@ contributions.post('/chamas/:chamaId/contributions', async (c) => {
   const ts = now();
   await c.env.DB.prepare(
     'INSERT INTO contribution_records (id, plan_id, membership_id, user_id, amount, expected_amount, status, due_date, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-  ).bind(id, planId, membershipId, membership.user_id as string, amount, expectedAmount, status, dueDate, note || null, ts, ts).run();
+  ).bind(id, planId, membershipId, membership.user_id as string, amount, expectedAmount, normalizedStatus, dueDate, note || null, ts, ts).run();
 
-  await auditLog(c.env.DB, { chamaId, userId, action: 'CONTRIBUTION_CREATED', entity: 'contribution_record', entityId: id, details: { amount, expectedAmount, status } });
-  return c.json({ record: { id, plan_id: planId, membership_id: membershipId, amount, expected_amount: expectedAmount, status, due_date: dueDate } }, 201);
+  await auditLog(c.env.DB, { chamaId, userId, action: 'CONTRIBUTION_CREATED', entity: 'contribution_record', entityId: id, details: { amount, expectedAmount, status: normalizedStatus } });
+  const contribution = {
+    id,
+    amount,
+    expectedAmount,
+    expected_amount: expectedAmount,
+    status: normalizedStatus,
+    dueDate,
+    due_date: dueDate,
+    note: note || null,
+    plan: { id: planId },
+    member: { id: membershipId },
+  };
+  return c.json({ record: contribution, contribution }, 201);
 });
 
 contributions.get('/chamas/:chamaId/contributions/:contributionId', async (c) => {
@@ -131,14 +165,28 @@ contributions.get('/chamas/:chamaId/contributions/:contributionId', async (c) =>
 
   const payments = await db.prepare('SELECT * FROM payments WHERE contribution_record_id = ? ORDER BY created_at DESC').bind(contributionId).all();
 
-  return c.json({
-    record: {
-      ...record,
-      plan: { name: record.plan_name, amount: record.plan_amount, frequency: record.plan_frequency, chamaId: record.chama_id },
-      membership: { id: record.mem_id, user: { name: record.user_name, email: record.user_email } },
-      payments: payments.results,
-    },
-  });
+  const contribution = {
+    id: record.id,
+    amount: record.amount,
+    expectedAmount: record.expected_amount,
+    expected_amount: record.expected_amount,
+    status: record.status,
+    dueDate: record.due_date,
+    due_date: record.due_date,
+    paidAt: record.paid_at,
+    paid_at: record.paid_at,
+    note: record.note,
+    createdAt: record.created_at,
+    created_at: record.created_at,
+    updatedAt: record.updated_at,
+    updated_at: record.updated_at,
+    plan: { id: record.plan_id, name: record.plan_name, amount: record.plan_amount, frequency: record.plan_frequency, chamaId: record.chama_id },
+    member: { id: record.mem_id, user: { name: record.user_name, email: record.user_email } },
+    membership: { id: record.mem_id, user: { name: record.user_name, email: record.user_email } },
+    payments: payments.results,
+  };
+
+  return c.json({ record: contribution, contribution });
 });
 
 contributions.patch('/chamas/:chamaId/contributions/:contributionId', async (c) => {
@@ -149,7 +197,9 @@ contributions.patch('/chamas/:chamaId/contributions/:contributionId', async (c) 
   const values: unknown[] = [];
 
   if (body.amount !== undefined) { updates.push('amount = ?'); values.push(body.amount); }
-  if (body.status) { updates.push('status = ?'); values.push(body.status); }
+  if (body.expectedAmount !== undefined) { updates.push('expected_amount = ?'); values.push(body.expectedAmount); }
+  if (body.dueDate) { updates.push('due_date = ?'); values.push(body.dueDate); }
+  if (body.status) { updates.push('status = ?'); values.push(body.status === 'PENDING' ? 'UPCOMING' : body.status); }
   if (body.note !== undefined) { updates.push('note = ?'); values.push(body.note); }
   if (body.paidAt) { updates.push('paid_at = ?'); values.push(body.paidAt); }
   updates.push('updated_at = ?'); values.push(now()); values.push(contributionId);
@@ -193,8 +243,30 @@ contributions.get('/chamas/:chamaId/overdue', async (c) => {
   const totalOverdue = await db.prepare("SELECT COALESCE(SUM(expected_amount), 0) as total FROM contribution_records WHERE status = 'OVERDUE' AND plan_id IN (SELECT id FROM contribution_plans WHERE chama_id = ?)").bind(chamaId).first() as { total: number };
 
   return c.json({
-    overdueRecords: overdueRecords.results.map(r => ({ ...r, plan: { name: r.plan_name }, membership: { user: { name: r.user_name, email: r.user_email } } })),
-    upcomingDues: upcomingDues.results.map(r => ({ ...r, plan: { name: r.plan_name }, membership: { user: { name: r.user_name, email: r.user_email } } })),
+    overdueRecords: overdueRecords.results.map(r => ({
+      id: r.id,
+      amount: r.amount,
+      expectedAmount: r.expected_amount,
+      expected_amount: r.expected_amount,
+      status: r.status,
+      dueDate: r.due_date,
+      due_date: r.due_date,
+      plan: { name: r.plan_name },
+      member: { user: { name: r.user_name, email: r.user_email } },
+      membership: { user: { name: r.user_name, email: r.user_email } },
+    })),
+    upcomingDues: upcomingDues.results.map(r => ({
+      id: r.id,
+      amount: r.amount,
+      expectedAmount: r.expected_amount,
+      expected_amount: r.expected_amount,
+      status: r.status,
+      dueDate: r.due_date,
+      due_date: r.due_date,
+      plan: { name: r.plan_name },
+      member: { user: { name: r.user_name, email: r.user_email } },
+      membership: { user: { name: r.user_name, email: r.user_email } },
+    })),
     summary: { totalExpected: totalExpected.total, totalPaid: totalPaid.total, totalOverdue: totalOverdue.total },
   });
 });

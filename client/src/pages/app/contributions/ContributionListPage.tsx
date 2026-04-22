@@ -108,7 +108,7 @@ export default function ContributionListPage() {
             options={[
               { value: '', label: 'All Statuses' },
               { value: 'PAID', label: 'Paid' },
-              { value: 'PENDING', label: 'Pending' },
+              { value: 'UPCOMING', label: 'Upcoming' },
               { value: 'OVERDUE', label: 'Overdue' },
               { value: 'PARTIALLY_PAID', label: 'Partially Paid' },
             ]}

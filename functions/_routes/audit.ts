@@ -24,7 +24,13 @@ audit.get('/chamas/:chamaId/audit', async (c) => {
 
   const rows = await db.prepare(sql).bind(...params).all();
   const logs = rows.results.map(r => ({
-    ...r,
+    id: r.id,
+    action: r.action,
+    entity: r.entity,
+    entityId: r.entity_id,
+    userId: r.user_id,
+    userName: r.user_name,
+    createdAt: r.created_at,
     details: r.details ? JSON.parse(r.details as string) : null,
     user: r.user_name ? { name: r.user_name, email: r.user_email } : null,
   }));
@@ -39,7 +45,19 @@ audit.get('/chamas/:chamaId/audit/:logId', async (c) => {
     FROM audit_logs al LEFT JOIN users u ON al.user_id = u.id WHERE al.id = ?
   `).bind(logId).first();
   if (!log) return c.json({ error: 'Audit log not found' }, 404);
-  return c.json({ log: { ...log, details: log.details ? JSON.parse(log.details as string) : null, user: log.user_name ? { name: log.user_name, email: log.user_email } : null } });
+  return c.json({
+    log: {
+      id: log.id,
+      action: log.action,
+      entity: log.entity,
+      entityId: log.entity_id,
+      userId: log.user_id,
+      userName: log.user_name,
+      createdAt: log.created_at,
+      details: log.details ? JSON.parse(log.details as string) : null,
+      user: log.user_name ? { name: log.user_name, email: log.user_email } : null,
+    },
+  });
 });
 
 export default audit;

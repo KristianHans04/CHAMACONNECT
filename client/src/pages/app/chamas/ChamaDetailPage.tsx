@@ -30,19 +30,19 @@ interface ChamaDetail {
 }
 
 export default function ChamaDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const { chamaId } = useParams<{ chamaId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['chama', id],
-    queryFn: () => api<{ chama: ChamaDetail }>(`/chamas/${id}`),
-    enabled: !!id,
+    queryKey: ['chama', chamaId],
+    queryFn: () => api<{ chama: ChamaDetail }>(`/chamas/${chamaId}`),
+    enabled: !!chamaId,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => api(`/chamas/${id}`, { method: 'DELETE' }),
+    mutationFn: () => api(`/chamas/${chamaId}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chamas'] });
       navigate('/app/chamas');
@@ -61,11 +61,11 @@ export default function ChamaDetailPage() {
   const isAdmin = chama.role === 'ADMIN' || chama.role === 'OWNER';
 
   const navLinks = [
-    { to: `/app/chamas/${id}/members`, label: 'Members', icon: Users },
-    { to: `/app/chamas/${id}/contributions`, label: 'Contributions', icon: ClipboardList },
-    { to: `/app/chamas/${id}/overdue`, label: 'Overdue', icon: AlertTriangle },
-    { to: `/app/chamas/${id}/statements`, label: 'Statements', icon: FileText },
-    { to: `/app/chamas/${id}/audit`, label: 'Audit Log', icon: Shield },
+    { to: `/app/chamas/${chamaId}/members`, label: 'Members', icon: Users },
+    { to: `/app/chamas/${chamaId}/contributions`, label: 'Contributions', icon: ClipboardList },
+    { to: `/app/chamas/${chamaId}/overdue`, label: 'Overdue', icon: AlertTriangle },
+    { to: `/app/chamas/${chamaId}/statements`, label: 'Statements', icon: FileText },
+    { to: `/app/chamas/${chamaId}/audit`, label: 'Audit Log', icon: Shield },
   ];
 
   return (
@@ -91,7 +91,7 @@ export default function ChamaDetailPage() {
 
         {isAdmin && (
           <div className="flex gap-2">
-            <Link to={`/app/chamas/${id}/edit`}>
+            <Link to={`/app/chamas/${chamaId}/edit`}>
               <Button variant="outline" size="sm">
                 <Pencil className="mr-1.5 h-3.5 w-3.5" />
                 Edit

@@ -63,7 +63,7 @@ export default function ContributionCreatePage() {
       amount: 0,
       expectedAmount: 0,
       dueDate: '',
-      status: 'PENDING',
+      status: 'UPCOMING',
       note: '',
     },
   });
@@ -154,7 +154,7 @@ export default function ContributionCreatePage() {
               id="status"
               label="Status"
               options={[
-                { value: 'PENDING', label: 'Pending' },
+                { value: 'UPCOMING', label: 'Upcoming' },
                 { value: 'PAID', label: 'Paid' },
                 { value: 'PARTIALLY_PAID', label: 'Partially Paid' },
                 { value: 'OVERDUE', label: 'Overdue' },

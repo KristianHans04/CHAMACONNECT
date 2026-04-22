@@ -69,18 +69,18 @@ export default function App() {
         <Route index element={<DashboardPage />} />
         <Route path="chamas" element={<ChamaListPage />} />
         <Route path="chamas/new" element={<ChamaCreatePage />} />
-        <Route path="chamas/:id" element={<ChamaDetailPage />} />
-        <Route path="chamas/:id/edit" element={<ChamaEditPage />} />
-        <Route path="chamas/:id/members" element={<MemberListPage />} />
-        <Route path="chamas/:id/members/:memberId" element={<MemberDetailPage />} />
-        <Route path="chamas/:id/contributions" element={<ContributionListPage />} />
-        <Route path="chamas/:id/contributions/new" element={<ContributionCreatePage />} />
-        <Route path="chamas/:id/contributions/:contributionId" element={<ContributionDetailPage />} />
-        <Route path="chamas/:id/contributions/:contributionId/edit" element={<ContributionEditPage />} />
-        <Route path="chamas/:id/overdue" element={<OverduePage />} />
-        <Route path="chamas/:id/statements" element={<StatementsListPage />} />
-        <Route path="chamas/:id/statements/:memberId" element={<MemberStatementPage />} />
-        <Route path="chamas/:id/audit" element={<AuditLogPage />} />
+        <Route path="chamas/:chamaId" element={<ChamaDetailPage />} />
+        <Route path="chamas/:chamaId/edit" element={<ChamaEditPage />} />
+        <Route path="chamas/:chamaId/members" element={<MemberListPage />} />
+        <Route path="chamas/:chamaId/members/:memberId" element={<MemberDetailPage />} />
+        <Route path="chamas/:chamaId/contributions" element={<ContributionListPage />} />
+        <Route path="chamas/:chamaId/contributions/new" element={<ContributionCreatePage />} />
+        <Route path="chamas/:chamaId/contributions/:contributionId" element={<ContributionDetailPage />} />
+        <Route path="chamas/:chamaId/contributions/:contributionId/edit" element={<ContributionEditPage />} />
+        <Route path="chamas/:chamaId/overdue" element={<OverduePage />} />
+        <Route path="chamas/:chamaId/statements" element={<StatementsListPage />} />
+        <Route path="chamas/:chamaId/statements/:memberId" element={<MemberStatementPage />} />
+        <Route path="chamas/:chamaId/audit" element={<AuditLogPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
 

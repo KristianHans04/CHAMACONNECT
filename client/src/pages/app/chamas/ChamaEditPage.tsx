@@ -26,14 +26,14 @@ interface ChamaDetail {
 }
 
 export default function ChamaEditPage() {
-  const { id } = useParams<{ id: string }>();
+  const { chamaId } = useParams<{ chamaId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['chama', id],
-    queryFn: () => api<{ chama: ChamaDetail }>(`/chamas/${id}`),
-    enabled: !!id,
+    queryKey: ['chama', chamaId],
+    queryFn: () => api<{ chama: ChamaDetail }>(`/chamas/${chamaId}`),
+    enabled: !!chamaId,
   });
 
   const {
@@ -56,11 +56,11 @@ export default function ChamaEditPage() {
 
   const mutation = useMutation({
     mutationFn: (values: FormValues) =>
-      api(`/chamas/${id}`, { method: 'PATCH', body: values }),
+      api(`/chamas/${chamaId}`, { method: 'PATCH', body: values }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chamas'] });
-      queryClient.invalidateQueries({ queryKey: ['chama', id] });
-      navigate(`/app/chamas/${id}`);
+      queryClient.invalidateQueries({ queryKey: ['chama', chamaId] });
+      navigate(`/app/chamas/${chamaId}`);
     },
   });
 

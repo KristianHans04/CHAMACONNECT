@@ -121,8 +121,8 @@ export default function MemberDetailPage() {
                 label="Role"
                 options={[
                   { value: 'MEMBER', label: 'Member' },
+                  { value: 'TREASURER', label: 'Treasurer' },
                   { value: 'ADMIN', label: 'Admin' },
-                  { value: 'OWNER', label: 'Owner' },
                 ]}
                 value={selectedRole || member.role}
                 onChange={(e) => setSelectedRole(e.target.value)}
