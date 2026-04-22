@@ -18,7 +18,6 @@ export function PublicHeader() {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="container-wide flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-bold text-slate-900">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700 text-sm font-bold text-white">C</div>
           <span className="hidden sm:inline">ChamaConnect</span>
         </Link>
 

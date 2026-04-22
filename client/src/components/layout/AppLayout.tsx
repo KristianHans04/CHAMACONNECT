@@ -42,7 +42,6 @@ export function AppLayout() {
       )}>
         <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4">
           <Link to="/app" className="flex items-center gap-2 font-bold text-slate-900">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700 text-sm font-bold text-white">C</div>
             <span>ChamaConnect</span>
           </Link>
           <button className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 lg:hidden" onClick={() => setSidebarOpen(false)}>
