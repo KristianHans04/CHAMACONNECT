@@ -10,6 +10,7 @@ import contributions from '../_routes/contributions';
 import statements from '../_routes/statements';
 import auditRoutes from '../_routes/audit';
 import contact from '../_routes/contact';
+import seed from '../_routes/seed';
 
 type HonoEnv = { Bindings: Env };
 
@@ -45,6 +46,7 @@ app.route('/', contributions);
 app.route('/', statements);
 app.route('/', auditRoutes);
 app.route('/', contact);
+app.route('/', seed);
 
 export const onRequest: PagesFunction<Env> = async (context) => {
   return app.fetch(context.request, context.env, context);
