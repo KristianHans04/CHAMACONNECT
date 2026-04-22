@@ -7,3 +7,4 @@ dist/
 coverage/
 *.tsbuildinfo
 DEMO_GUIDE.md
+.wrangler
