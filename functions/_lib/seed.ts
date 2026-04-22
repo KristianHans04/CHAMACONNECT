@@ -171,7 +171,7 @@ export async function seedData(db: D1Database): Promise<{ success: boolean; mess
       name: string;
     }> = [];
 
-    const frequencies = ['WEEKLY', 'MONTHLY', 'DAILY'];
+    const frequencies = ['WEEKLY', 'MONTHLY', 'QUARTERLY'];
     const planNames: Record<string, string[]> = {
       'Office Savings Group': ['Weekly Savings', 'Emergency Fund'],
       'Community Welfare': ['Monthly Harambee', 'Hospital Fund', 'Education Support'],
