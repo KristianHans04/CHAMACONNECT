@@ -91,11 +91,11 @@ export async function seedData(db: D1Database): Promise<{ success: boolean; mess
       chamas.push({ id: chamaId, name, members: [] });
     }
 
-    // 3. Add 8-10 members to each chama
+    // 3. Add 3-5 members to each chama (reduced from 8-10 to avoid CPU limits)
     const membersByChama: Record<string, string[]> = {};
 
     for (const chama of chamas) {
-      const memberCount = randomAmount(8, 10);
+      const memberCount = randomAmount(3, 5);
       const chamaMembers: string[] = [];
 
       // First add the main user as admin (if not already)
@@ -114,7 +114,7 @@ export async function seedData(db: D1Database): Promise<{ success: boolean; mess
         chamaMembers.push(adminMemberId);
       }
 
-      // Add other members
+      // Add other members (reduced from 8-10 to 3-5)
       for (let i = 1; i < memberCount; i++) {
         const memberId = generateId();
         let memberName = generateKenyanName();
@@ -213,7 +213,8 @@ export async function seedData(db: D1Database): Promise<{ success: boolean; mess
 
       for (const planId of chamaPlans) {
         const plan = planData.find(p => p.id === planId)!;
-        const recordsPerMember = randomAmount(5, 8);
+        // Reduced from 5-8 to 2-3 per member per plan
+        const recordsPerMember = randomAmount(2, 3);
 
         for (const memberId of chamaMembers) {
           const membershipData = await db.prepare(`
