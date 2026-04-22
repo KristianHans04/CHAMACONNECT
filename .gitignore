@@ -7,4 +7,7 @@ dist/
 coverage/
 *.tsbuildinfo
 DEMO_GUIDE.md
+<<<<<<< HEAD
 .wrangler
+=======
+>>>>>>> 5df796b (fix: Handle undefined values in seed script for plan names and membership queries)
