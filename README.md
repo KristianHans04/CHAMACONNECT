@@ -1,7 +1,16 @@
 # ChamaConnect Transparency and Operations Suite
 
-**Live URL:** [https://chamaconnect.kristianhans.com](https://chamaconnect.kristianhans.com)
+**Live URL:** [https://chamaconnect.kristianhans.com](https://chamaconnect.kristianhans.com)  
 **Fallback URL:** [https://chamaconnect.pages.dev](https://chamaconnect.pages.dev)
+
+## 🚀 Quick Demo
+
+**Login:** user@example.com → Check email for OTP from chamaconnect@scrapifie.com
+
+Pre-populated with:
+- 3 chamas with realistic data
+- 79 contribution records across multiple statuses
+- Complete audit trail and member statements
 
 ---
 
