@@ -140,25 +140,34 @@ export default function FeaturesPage() {
                     </p>
                   </div>
 
-                  {/* Benefits card */}
-                  <Card>
-                    <CardContent className="p-6">
-                      <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-                        Key Benefits
-                      </p>
-                      <ul className="mt-4 space-y-3">
-                        {feature.benefits.map((benefit) => (
-                          <li
-                            key={benefit}
-                            className="flex items-start gap-3 text-sm text-slate-700"
-                          >
-                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" />
-                            {benefit}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
+                  {/* Benefits card with optional image */}
+                  <div className="space-y-6">
+                    <Card>
+                      <CardContent className="p-6">
+                        <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                          Key Benefits
+                        </p>
+                        <ul className="mt-4 space-y-3">
+                          {feature.benefits.map((benefit) => (
+                            <li
+                              key={benefit}
+                              className="flex items-start gap-3 text-sm text-slate-700"
+                            >
+                              <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" />
+                              {benefit}
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                    {index === 0 && (
+                      <img
+                        src="/features.jpg"
+                        alt={feature.title}
+                        className="hidden md:block rounded-lg shadow-lg"
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </section>

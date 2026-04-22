@@ -78,30 +78,41 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-white py-20 md:py-28">
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 md:text-5xl lg:text-6xl">
-            Financial transparency
-            <br />
-            for every chama
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">
-            ChamaConnect gives your group a single source of truth for
-            contributions, payments, and member records. No more disputes. No
-            more guesswork.
-          </p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link to="/signup">
-              <Button size="lg">
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/features">
-              <Button variant="outline" size="lg">
-                Learn More
-              </Button>
-            </Link>
+      <section className="relative bg-gradient-to-b from-brand-50 to-white py-20 md:py-28">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="grid gap-12 md:grid-cols-2 md:items-center">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-slate-900 md:text-5xl lg:text-6xl">
+                Financial transparency
+                <br />
+                for every chama
+              </h1>
+              <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">
+                ChamaConnect gives your group a single source of truth for
+                contributions, payments, and member records. No more disputes. No
+                more guesswork.
+              </p>
+              <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row">
+                <Link to="/signup">
+                  <Button size="lg">
+                    Get Started
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link to="/features">
+                  <Button variant="outline" size="lg">
+                    Learn More
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <img
+                src="/hero.jpg"
+                alt="Team collaboration"
+                className="rounded-lg shadow-2xl"
+              />
+            </div>
           </div>
         </div>
       </section>
