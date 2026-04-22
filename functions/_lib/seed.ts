@@ -1,8 +1,5 @@
+import type { D1Database } from '@cloudflare/workers-types';
 import { generateId, now, auditLog } from './types';
-
-interface D1Database {
-  prepare(query: string): any;
-}
 
 // Kenyan names pool
 const firstNames = ['James', 'Mary', 'David', 'Grace', 'John', 'Susan', 'Peter', 'Margaret', 'Paul', 'Anne', 'Michael', 'Patricia'];
@@ -191,7 +188,8 @@ export async function seedData(db: D1Database): Promise<{ success: boolean; mess
         const amount = chama.name === 'Office Savings Group' ? randomAmount(500, 2000) : 
                        chama.name === 'Community Welfare' ? randomAmount(1000, 3000) :
                        randomAmount(5000, 15000);
-        const planName = (planNames[chama.name] || [`Plan ${i + 1}`])[i];
+        const planNames_forChama = planNames[chama.name] || [];
+        const planName = planNames_forChama[i] || `Plan ${i + 1}`;
 
         await db.prepare(`
           INSERT INTO contribution_plans (id, chama_id, name, description, amount, frequency, start_date, is_active, created_at, updated_at)
@@ -220,7 +218,9 @@ export async function seedData(db: D1Database): Promise<{ success: boolean; mess
         for (const memberId of chamaMembers) {
           const membershipData = await db.prepare(`
             SELECT user_id FROM memberships WHERE id = ?
-          `).bind(memberId).first() as { user_id: string };
+          `).bind(memberId).first() as { user_id: string } | undefined;
+
+          if (!membershipData) continue; // Skip if membership not found
 
           for (let i = 0; i < recordsPerMember; i++) {
             const recordId = generateId();

@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import type { Env } from '../_lib/types';
+import type { D1Database } from '@cloudflare/workers-types';
 import { generateId, generateOtp, now, createJwt, verifyJwt, auditLog } from '../_lib/types';
 import { sendOtpEmail } from '../_lib/email';
 
