@@ -11,6 +11,6 @@
     "deploy": "wrangler pages deploy client/dist --project-name chamaconnect"
   },
   "dependencies": {
-    "hono": "^4.7.0"
+    "hono": "^4.12.34"
   }
 }
