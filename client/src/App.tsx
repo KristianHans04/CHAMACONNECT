@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { PageLoader } from '@/components/ui/Spinner';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { NotFoundPage } from '@/components/NotFoundPage';
 
 import HomePage from '@/pages/public/HomePage';
 import FeaturesPage from '@/pages/public/FeaturesPage';
@@ -85,7 +86,7 @@ export default function App() {
       </Route>
 
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
